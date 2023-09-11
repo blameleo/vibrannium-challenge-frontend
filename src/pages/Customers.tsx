@@ -1,46 +1,57 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, ChangeEvent } from "react";
 import { CustomerTable } from "../components/CustomerTable";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
-export const Customers = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTargetGroup, setSelectedTargetGroup] = useState("");
-  const [campaign, setCampaign] = useState(null);
+type CampaignData = {
+  title: string;
+  description: string;
+  targetGroup: string;
+};
 
-  const [formData, setFormData] = useState({
+export const Customers: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedTargetGroup, setSelectedTargetGroup] = useState<string>("");
+  const [campaign, setCampaign] = useState<CampaignData[] | null>(null);
+
+  const [formData, setFormData] = useState<CampaignData>({
     title: "",
     description: "",
     targetGroup: selectedTargetGroup,
   });
 
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLFormElement | null>(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-  const handleTargetGroupChange = (e) => {
+
+  const handleTargetGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     setSelectedTargetGroup(selectedValue);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
+    const data: CampaignData = {
       title: formData.title,
       description: formData.description,
       targetGroup: selectedTargetGroup,
     };
-    const response = await axios.post(
-      "https://vibrannium-challenge-backend-api.vercel.app/campaigns/create",
-      data
-    );
-    console.log(response);
-    closeModal();
-    getCampaigns();
+    try {
+      const response: AxiosResponse = await axios.post(
+        "https://vibrannium-challenge-backend-api.vercel.app/campaigns/create",
+        data
+      );
+      console.log(response);
+      closeModal();
+      getCampaigns();
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+    }
   };
 
   const openModal = () => {
@@ -52,11 +63,15 @@ export const Customers = () => {
   };
 
   const getCampaigns = async () => {
-    const response = await axios.get(
-      "https://vibrannium-challenge-backend-api.vercel.app/campaigns/getcampaigns"
-    );
+    try {
+      const response: AxiosResponse = await axios.get(
+        "https://vibrannium-challenge-backend-api.vercel.app/campaigns/getcampaigns"
+      );
 
-    setCampaign(response.data);
+      setCampaign(response.data);
+    } catch (error) {
+      console.error("Error getting campaigns:", error);
+    }
   };
 
   useEffect(() => {
@@ -119,20 +134,23 @@ export const Customers = () => {
                 cy="8.8055"
                 r="7.49047"
                 stroke="#808885"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M14.0153 14.4043L16.9519 17.3333"
                 stroke="#808885"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             <input
               type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
               className="outline-none w-full placeholder:text-[13px] pl-2"
               placeholder="Search customer log by customer name, email address & phone number"
             />
@@ -156,32 +174,32 @@ export const Customers = () => {
             <path
               d="M11.0969 12.5195H5.0802"
               stroke="white"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M11.0969 9.03076H5.0802"
               stroke="white"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M7.37603 5.55009H5.0802"
               stroke="white"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M11.2572 1.2915C11.2572 1.2915 4.85965 1.29484 4.84965 1.29484C2.54965 1.309 1.12549 2.82234 1.12549 5.13067V12.794C1.12549 15.114 2.56049 16.6332 4.88049 16.6332C4.88049 16.6332 11.2772 16.6307 11.288 16.6307C13.588 16.6165 15.013 15.1023 15.013 12.794V5.13067C15.013 2.81067 13.5772 1.2915 11.2572 1.2915Z"
               stroke="white"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
 
@@ -209,32 +227,32 @@ export const Customers = () => {
                 <path
                   d="M11.0968 12.5195H5.08017"
                   stroke="#00100B"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M11.0968 9.03076H5.08017"
                   stroke="#00100B"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M7.37609 5.55009H5.08026"
                   stroke="#00100B"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M11.2572 1.2915C11.2572 1.2915 4.85967 1.29484 4.84967 1.29484C2.54967 1.309 1.1255 2.82234 1.1255 5.13067V12.794C1.1255 15.114 2.5605 16.6332 4.8805 16.6332C4.8805 16.6332 11.2772 16.6307 11.288 16.6307C13.588 16.6165 15.013 15.1023 15.013 12.794V5.13067C15.013 2.81067 13.5772 1.2915 11.2572 1.2915Z"
                   stroke="#00100B"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
               <p className="text-[20px]">Create a campaign</p>
@@ -295,7 +313,7 @@ export const Customers = () => {
                   onClick={handleSubmit}
                   className="bg-[#004741] text-white rounded-[6px] mt-[32px] h-[48px] text-[16px]"
                 >
-                  Sumit your comment
+                  Submit your comment
                 </button>
               </div>
             </div>
@@ -317,16 +335,16 @@ export const Customers = () => {
             <path
               d="M0.833374 5.18288L10.8334 5.18288"
               stroke="#AAAFAE"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M4.86658 9.19914L0.833243 5.18314L4.86658 1.16647"
               stroke="#AAAFAE"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
 
@@ -350,16 +368,16 @@ export const Customers = () => {
             <path
               d="M11.1666 5.18288L1.16663 5.18288"
               stroke="#004741"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
             <path
               d="M7.13342 9.19914L11.1668 5.18314L7.13342 1.16647"
               stroke="#004741"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </div>

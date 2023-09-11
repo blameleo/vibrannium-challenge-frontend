@@ -1,4 +1,15 @@
-export const CustomerTable = ({ campaigns }) => {
+type Campaign = {
+  title: string;
+  description: string;
+  targetGroup: string;
+  campaignStatus: string;
+};
+
+type CustomerTableProps = {
+  campaigns: Campaign[];
+};
+
+export const CustomerTable: React.FC<CustomerTableProps> = ({ campaigns }) => {
   return (
     <table className="w-[32px] sm:w-full border-collapse table-auto  mt-[24px] ">
       <thead className="border-t-2 border-[#ECECEB] rounded-t-lg">
