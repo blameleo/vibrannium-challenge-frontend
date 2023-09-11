@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
 export const CustomerTable = ({ campaigns }) => {
   return (
     <table className="w-[32px] sm:w-full border-collapse table-auto  mt-[24px] ">
