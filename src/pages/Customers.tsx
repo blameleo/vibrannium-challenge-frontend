@@ -12,6 +12,7 @@ type CampaignData = {
 export const Customers: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTargetGroup, setSelectedTargetGroup] = useState<string>("");
+
   const [campaign, setCampaign] = useState<CampaignData[]>([]);
 
   const [formData, setFormData] = useState<CampaignData>({
@@ -20,6 +21,32 @@ export const Customers: React.FC = () => {
     targetGroup: selectedTargetGroup,
     campaignStatus: "",
   });
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 9;
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const paginatedCampaigns = campaign?.slice(firstIndex, lastIndex);
+  const nPage = Math.ceil(campaign?.length / itemsPerPage);
+  const numbers = [...Array(nPage + 1).keys()].slice(1);
+
+  const prevPage = () => {
+    if (currentPage !== firstIndex) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const changeCurrentPage = (n: number) => {
+    setCurrentPage(n);
+  };
+
+  const nextPage = () => {
+    if (currentPage !== lastIndex) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  console.log(paginatedCampaigns);
 
   const modalRef = useRef<HTMLFormElement | null>(null);
 
@@ -45,6 +72,13 @@ export const Customers: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setFormData({
+      title: "",
+      description: "",
+      targetGroup: selectedTargetGroup,
+      campaignStatus: "",
+    });
+    setSelectedTargetGroup("");
     e.preventDefault();
     const data: CampaignData = {
       title: formData.title,
@@ -114,7 +148,7 @@ export const Customers: React.FC = () => {
   }, [isModalOpen]);
 
   return (
-    <section className="h-screen px-4 lg:px-[250px] bg-[#F3F4F6] border border-ch[rgba(204, 207, 206, 0.24)]">
+    <section className="h-[1000px] px-4 lg:px-[250px] bg-[#F3F4F6] border border-ch[rgba(204, 207, 206, 0.24)]">
       <h1 className="pt-[32px] text-[#00100B] text-[20px] font-semibold">
         Customers
       </h1>
@@ -223,7 +257,7 @@ export const Customers: React.FC = () => {
           <form
             ref={modalRef}
             action=""
-            className="absolute bg-white w-[350px] sm:w-[480px] sm:h-[716px] p-[32px] rounded-[6px] shadow-lg "
+            className="absolute bg-white w-[300px] sm:w-[480px] sm:h-[716px] p-[32px] rounded-[6px] shadow-lg "
           >
             <div className="flex items-center gap-2">
               <svg
@@ -309,7 +343,7 @@ export const Customers: React.FC = () => {
                   <select
                     onChange={handleTargetGroupChange}
                     value={selectedTargetGroup}
-                    className="block h-[48px] appearance-none w-full bg-white border border-[#CCCFCE] hover:border-gray-500  rounded  leading-tight  focus:outline-none focus:shadow-outline"
+                    className="block text-sm px-3 h-[48px] appearance-none w-full bg-white border border-[#CCCFCE] hover:border-gray-500  rounded  leading-tight  focus:outline-none focus:shadow-outline"
                   >
                     <option value="">Select your target group</option>
                     <option value="All customers">All customers</option>
@@ -330,7 +364,7 @@ export const Customers: React.FC = () => {
         </div>
       )}
 
-      <CustomerTable campaigns={campaign} />
+      <CustomerTable campaigns={paginatedCampaigns} />
 
       <div className="flex items-center justify-end mt-[36px] ">
         <div className="flex items-center w-40 justify-around">
@@ -340,6 +374,7 @@ export const Customers: React.FC = () => {
             height="10"
             viewBox="0 0 12 10"
             fill="none"
+            onClick={prevPage}
           >
             <path
               d="M0.833374 5.18288L10.8334 5.18288"
@@ -356,16 +391,28 @@ export const Customers: React.FC = () => {
               strokeLinejoin="round"
             />
           </svg>
+          {numbers.map((n, i) => {
+            return (
+              <button
+                key={i}
+                onClick={() => changeCurrentPage(n)}
+                className={`w-[32px] h-[32px] text-[12px]   ${
+                  currentPage === n
+                    ? "bg-[#004741] text-white"
+                    : "text-[#004741] bg-white"
+                } rounded-full`}
+              >
+                {n}
+              </button>
+            );
+          })}
 
-          <button className="w-[32px] h-[32px] text-[12px] bg-[#004741] text-white rounded-full">
-            1
-          </button>
-          <button className="w-[32px] h-[32px] text-[12px] text-[#004741] bg-white rounded-full">
+          {/* <button className="w-[32px] h-[32px] text-[12px] text-[#004741] bg-white rounded-full">
             2
           </button>
           <button className="w-[32px] h-[32px]  text-[#004741] bg-white rounded-full flex justify-center ">
             ...
-          </button>
+          </button> */}
 
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -373,6 +420,7 @@ export const Customers: React.FC = () => {
             height="10"
             viewBox="0 0 12 10"
             fill="none"
+            onClick={nextPage}
           >
             <path
               d="M11.1666 5.18288L1.16663 5.18288"

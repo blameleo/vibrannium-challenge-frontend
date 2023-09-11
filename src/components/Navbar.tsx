@@ -307,7 +307,7 @@ export default function Navbar() {
           </svg>
         </div>
 
-        <FaHamburger className="sm:hidden" onClick={() => showMenu()} />
+        <FaHamburger className="lg:hidden" onClick={() => showMenu()} />
       </div>
       {openHam && (
         <ul className=" text-[#808785] flex flex-col items-center">

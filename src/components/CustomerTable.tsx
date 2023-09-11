@@ -12,7 +12,7 @@ type CustomerTableProps = {
 export const CustomerTable: React.FC<CustomerTableProps> = ({ campaigns }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse table-auto  mt-[24px] border rounded">
+      <table className="min-w-full divide-y divide-gray-200 border-collapse table-auto  mt-[24px] border rounded">
         <thead className="  ">
           <tr
             className="
@@ -35,14 +35,14 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({ campaigns }) => {
         <tbody>
           {campaigns?.map((campaign) => {
             return (
-              <tr className="text-[11px] bg-white border-b">
-                <td className="text-left px-[15px]  py-[10px] sm:px-[24px] ">
+              <tr className="text-[11px] bg-white border-b text-[#55605C]">
+                <td className="text-left px-[15px]  py-[10px] sm:px-[12px] ">
                   {campaign.title}
                 </td>
-                <td className="truncate px-[4px]  text-left py-[10px] sm:px-[24px]">
+                <td className="truncate max-w-[200px] px-[4px]  text-left py-[10px] sm:px-[24px]">
                   {campaign.description}
                 </td>
-                <td className="py-[10px] px-[15px] sm:px-[24px]">
+                <td className="py-[10px] px-[15px] sm:px-[12px]">
                   {campaign.targetGroup}
                 </td>
                 <td className="py-[10px] sm:px-[24px] px-[15px] ">
