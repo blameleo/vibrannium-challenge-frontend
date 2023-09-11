@@ -6,6 +6,7 @@ type CampaignData = {
   title: string;
   description: string;
   targetGroup: string;
+  campaignStatus: string;
 };
 
 export const Customers: React.FC = () => {
@@ -17,6 +18,7 @@ export const Customers: React.FC = () => {
     title: "",
     description: "",
     targetGroup: selectedTargetGroup,
+    campaignStatus: "",
   });
 
   const modalRef = useRef<HTMLFormElement | null>(null);
@@ -48,6 +50,7 @@ export const Customers: React.FC = () => {
       title: formData.title,
       description: formData.description,
       targetGroup: selectedTargetGroup,
+      campaignStatus: "",
     };
     try {
       const response: AxiosResponse = await axios.post(
