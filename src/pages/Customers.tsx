@@ -11,7 +11,7 @@ type CampaignData = {
 export const Customers: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTargetGroup, setSelectedTargetGroup] = useState<string>("");
-  const [campaign, setCampaign] = useState<CampaignData[] | null>(null);
+  const [campaign, setCampaign] = useState<CampaignData[]>([]);
 
   const [formData, setFormData] = useState<CampaignData>({
     title: "",
@@ -32,6 +32,14 @@ export const Customers: React.FC = () => {
   const handleTargetGroupChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     setSelectedTargetGroup(selectedValue);
+  };
+
+  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -281,7 +289,7 @@ export const Customers: React.FC = () => {
                 <textarea
                   name="description"
                   value={formData.description}
-                  onChange={handleChange}
+                  onChange={handleTextareaChange}
                   className="p-[16px] resize-none border rounded-[6px] outline-none placeholder:text-[14px] mt-[16px]"
                   placeholder="Write your message here"
                   rows={6}
