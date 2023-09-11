@@ -165,7 +165,7 @@ export const Customers: React.FC = () => {
       </div>
 
       <div className="mt-[24px] lg:flex justify-between">
-        <form action="" className="flex" onClick={(e) => e.preventDefault(e)}>
+        <form action="" className="flex" onClick={(e) => e.preventDefault()}>
           <div className="flex p-[16px] h-[48px] items-center border rounded-[6px]  border-[rgba(204, 207, 206, 0.40)] bg-white w-[500px] ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
