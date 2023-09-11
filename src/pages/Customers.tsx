@@ -1,9 +1,47 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CustomerTable } from "../components/CustomerTable";
+import axios from "axios";
 
 export const Customers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTargetGroup, setSelectedTargetGroup] = useState("");
+  const [campaign, setCampaign] = useState(null);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    targetGroup: selectedTargetGroup,
+  });
+
   const modalRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleTargetGroupChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedTargetGroup(selectedValue);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      title: formData.title,
+      description: formData.description,
+      targetGroup: selectedTargetGroup,
+    };
+    const response = await axios.post(
+      "https://vibrannium-challenge-backend-api.vercel.app/campaigns/create",
+      data
+    );
+    console.log(response);
+    closeModal();
+    getCampaigns();
+  };
 
   const openModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -12,6 +50,18 @@ export const Customers = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const getCampaigns = async () => {
+    const response = await axios.get(
+      "https://vibrannium-challenge-backend-api.vercel.app/campaigns/getcampaigns"
+    );
+
+    setCampaign(response.data);
+  };
+
+  useEffect(() => {
+    getCampaigns();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,7 +88,7 @@ export const Customers = () => {
   }, [isModalOpen]);
 
   return (
-    <section className="px-4 lg:px-[250px] bg-[#F3F4F6] border border-[rgba(204, 207, 206, 0.24)]">
+    <section className="h-screen px-4 lg:px-[250px] bg-[#F3F4F6] border border-ch[rgba(204, 207, 206, 0.24)]">
       <h1 className="pt-[32px] text-[#00100B] text-[20px] font-semibold">
         Customers
       </h1>
@@ -146,7 +196,7 @@ export const Customers = () => {
           <form
             ref={modalRef}
             action=""
-            className="absolute bg-white w-[480px] h-[716px] p-[32px] rounded-[6px] shadow-lg "
+            className="absolute bg-white w-[350px] sm:w-[480px] sm:h-[716px] p-[32px] rounded-[6px] shadow-lg "
           >
             <div className="flex items-center gap-2">
               <svg
@@ -192,11 +242,14 @@ export const Customers = () => {
 
             <div className="mt-[40px]">
               <div className="flex flex-col">
-                <label htmlFor="" className="text-[14px] font-semibold">
+                <label htmlFor="title" className="text-[14px] font-semibold">
                   Campaign Title
                 </label>
                 <input
                   type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
                   className="p-[16px] border rounded-[6px] outline-none placeholder:text-[14px] mt-[16px]"
                   placeholder="Write your campaign title here"
                 />
@@ -208,6 +261,9 @@ export const Customers = () => {
                   Description
                 </label>
                 <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
                   className="p-[16px] resize-none border rounded-[6px] outline-none placeholder:text-[14px] mt-[16px]"
                   placeholder="Write your message here"
                   rows={6}
@@ -223,7 +279,11 @@ export const Customers = () => {
                   Target group
                 </label>
                 <div className="relative mt-3">
-                  <select className="block h-[48px] appearance-none w-full bg-white border border-[#CCCFCE] hover:border-gray-500  rounded  leading-tight  focus:outline-none focus:shadow-outline">
+                  <select
+                    onChange={handleTargetGroupChange}
+                    value={selectedTargetGroup}
+                    className="block h-[48px] appearance-none w-full bg-white border border-[#CCCFCE] hover:border-gray-500  rounded  leading-tight  focus:outline-none focus:shadow-outline"
+                  >
                     <option value="">Select your target group</option>
                     <option value="All customers">All customers</option>
                     <option value="option2">Option 2</option>
@@ -231,7 +291,10 @@ export const Customers = () => {
                   </select>
                 </div>
 
-                <button className="bg-[#004741] text-white rounded-[6px] mt-[32px] h-[48px] text-[16px]">
+                <button
+                  onClick={handleSubmit}
+                  className="bg-[#004741] text-white rounded-[6px] mt-[32px] h-[48px] text-[16px]"
+                >
                   Sumit your comment
                 </button>
               </div>
@@ -240,7 +303,7 @@ export const Customers = () => {
         </div>
       )}
 
-      <CustomerTable />
+      <CustomerTable campaigns={campaign} />
 
       <div className="flex items-center justify-end mt-[36px] ">
         <div className="flex items-center w-40 justify-around">
