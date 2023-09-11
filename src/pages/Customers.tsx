@@ -160,8 +160,6 @@ export const Customers: React.FC = () => {
             <input
               type="text"
               name="title"
-              value={formData.title}
-              onChange={handleChange}
               className="outline-none w-full placeholder:text-[13px] pl-2"
               placeholder="Search customer log by customer name, email address & phone number"
             />
